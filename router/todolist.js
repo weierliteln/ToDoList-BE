@@ -10,10 +10,22 @@ router.get('/get/list', (req, res) => {
   let sql = 'SELECT * FROM list ORDER BY create_time DESC';
   if (over === 'true') {
     sql = 'SELECT * FROM list WHERE over = 1 ORDER BY create_time DESC';
-  }
-  if (over === 'false') {
+  } else if (over === 'false') {
     sql = 'SELECT * FROM list WHERE over = 0 ORDER BY create_time DESC';
+  } else if (over === '') {
+    sql = 'SELECT * FROM list ORDER BY create_time DESC';
+  } else {
+    return res.status(400).json({
+      code: 0,
+      error: '无效的值，请使用 true 或 false, 或者不传。'
+    });
   }
+
+  const { content } = req.query;
+  if (content) {
+    sql = `SELECT * FROM list WHERE content LIKE '%${content}%' ORDER BY create_time DESC`;
+  }
+
 
   // 分页
   const { page, size } = req.query;
@@ -47,8 +59,8 @@ router.get('/get/list', (req, res) => {
     res.json({
       code: 1,
       data: rows,
-      page: page ? parseInt(page) : 1,
-      size: size ? parseInt(size) : 10,
+      page: page ? parseInt(page) : null,
+      size: size ? parseInt(size) : null,
       total
     });
   });
