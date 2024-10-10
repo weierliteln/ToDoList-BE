@@ -10,10 +10,9 @@ const router = express.Router()
 const expressJoi = require('@escook/express-joi')
 const { reg_login_schema } = require('../schema/user')
 
-
 // 注册
 router.post('/register', expressJoi(reg_login_schema), (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   let { username, password } = req.body;
 
   if (!username || !password) {

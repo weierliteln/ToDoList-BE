@@ -11,12 +11,11 @@ db.serialize(() => {
 )`)
 })
 
-//打印创造表的信息
 db.all("SELECT * FROM users", (err, rows) => {
   if (err) {
     throw err;
   }
-  console.log(rows);
+  // console.log(rows);
 });
 
 module.exports = db;

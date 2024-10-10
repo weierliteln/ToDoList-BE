@@ -19,13 +19,14 @@ app.use((req, res, next) => {
 })
 
 // 解析token的中间件
-// const config = require('./config')
-// const { expressjwt } = require('express-jwt')
-// app.use(expressjwt({
-//   secret: config.jwtSecretKey, algorithms: ["HS256"]
-// }).unless({ path: [/^\/api/] }))
+const config = require('./config')
+const { expressjwt } = require('express-jwt')
+app.use(expressjwt({
+  secret: config.jwtSecretKey, algorithms: ["HS256"]
+}).unless({ path: [/^\/user/] }))
 
 
+// 路由
 app.use('/user', require('./router/user'))
 
 app.use('/todo', require('./router/todolist'))
@@ -37,10 +38,18 @@ app.use('/todo', require('./router/todolist'))
 app.use((err, req, res, next) => {
   if (err instanceof join.ValidationError) {
     return res.status(400).json({
+      code: 0,
       error: err.message
     })
   }
+  if (err.name === 'UnauthorizedError') {
+    return res.status(401).json({
+      code: 0,
+      error: '身份认证失败'
+    })
+  }
   res.status(500).json({
+    code: 0,
     error: err.message
   })
 })
