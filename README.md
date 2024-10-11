@@ -1,5 +1,22 @@
 
 # TODOLIST
+### 使用说明
+
+1. 打开压缩包解压下载依赖
+
+   ```
+   pnpm install
+   ```
+
+2. 检查电脑是否安装sqlite3，若没有先安装
+
+3. 下载安装SQLiteStudio或HeidiSQL并连接数据库
+
+4. 启动服务
+
+   ```
+   nodemon app.js
+   ```
 
 Base URLs:http://127.0.0.1:3000
 
