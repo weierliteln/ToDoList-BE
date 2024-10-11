@@ -7,42 +7,56 @@ const router = express.Router()
 // 查询todolist
 router.get('/get/list', (req, res) => {
   const { over } = req.query;
-  let sql = 'SELECT * FROM list ORDER BY create_time DESC';
-  if (over === 'true') {
-    sql = 'SELECT * FROM list WHERE over = 1 ORDER BY create_time DESC';
-  } else if (over === 'false') {
-    sql = 'SELECT * FROM list WHERE over = 0 ORDER BY create_time DESC';
-  } else if (over === '') {
-    sql = 'SELECT * FROM list ORDER BY create_time DESC';
-  } else {
-    return res.status(400).json({
-      code: 0,
-      error: '无效的值，请使用 true 或 false, 或者不传。'
-    });
-  }
-
-  const { content } = req.query;
-  if (content) {
-    sql = `SELECT * FROM list WHERE content LIKE '%${content}%' ORDER BY create_time DESC`;
-  }
-
-
-  // 分页
-  const { page, size } = req.query;
-  if (page && size) {
-    sql += ` LIMIT ${size} OFFSET ${(page - 1) * size}`;
-  }
 
   let total = null;
-  db.all('SELECT COUNT(*) as total FROM list', (err, rows) => {
+
+  let sql = 'SELECT * FROM list ORDER BY create_time DESC';
+  let countSql = 'SELECT COUNT(*) as total FROM list';
+
+  if (over === 'true') {
+    sql = 'SELECT * FROM list WHERE over = 1 ORDER BY create_time DESC';
+    countSql = 'SELECT COUNT(*) as total FROM list WHERE over = 1';
+  }
+
+  if (over === 'false') {
+    sql = 'SELECT * FROM list WHERE over = 0 ORDER BY create_time DESC';
+    countSql = 'SELECT COUNT(*) as total FROM list WHERE over = 0';
+  }
+
+  if (over === '' && req.query.content) {
+    sql = `SELECT * FROM list WHERE content LIKE '%${req.query.content}%' ORDER BY create_time DESC`;
+    countSql = `SELECT COUNT(*) as total FROM list WHERE content LIKE ?`;
+  }
+
+  // 根据over和content查询
+  if (over && req.query.content) {
+    sql = `SELECT * FROM list WHERE over = ? AND content LIKE '%${req.query.content}%' ORDER BY create_time DESC`;
+    countSql = `SELECT COUNT(*) as total FROM list WHERE over = ? AND content LIKE ?`;
+  }
+
+
+
+  db.get(countSql, (err, row) => {
     if (err) {
       return res.status(500).json({
         code: 0,
         error: err.message
       });
     }
-    total = rows[0].total;
-  });
+    total = row.total;
+  }
+  );
+
+
+  // 分页
+  let { page, size } = req.query;
+  if (page && size) {
+    page = parseInt(page);
+    size = parseInt(size);
+    sql += ` LIMIT ${(page - 1) * size}, ${size}`;
+  }
+
+
 
   db.all(sql, (err, rows) => {
     if (err) {
@@ -61,7 +75,7 @@ router.get('/get/list', (req, res) => {
       data: rows,
       page: page ? parseInt(page) : null,
       size: size ? parseInt(size) : null,
-      total
+      total: total
     });
   });
 })
@@ -70,18 +84,19 @@ router.get('/get/list', (req, res) => {
 router.post('/add/list', (req, res) => {
   const { content, over, create_time, resolves_time } = req.body;
 
-  // 验证数据是否存在且不为空
-  if (!content || !over || !create_time || !resolves_time) {
-    return res.status(400).json({
-      error: '请填写完整的列表。'
-    });
+  if (!content || !create_time || !resolves_time) {
+    if (over === undefined) {
+      return res.status(400).json({
+        code: 0,
+        error: '请填写完整的列表。'
+      });
+    }
   }
 
-  // 确保 over 是一个有效的布尔值
   let overBool;
-  if (over === 'true') {
+  if (over === true) {
     overBool = 1;
-  } else if (over === 'false') {
+  } else if (over === false) {
     overBool = 0;
   } else {
     return res.status(400).json({
@@ -143,17 +158,19 @@ router.delete('/delete/list/:id', (req, res) => {
 router.put('/update/list/:id', (req, res) => {
   const { content, over, create_time, resolves_time } = req.body;
 
-  if (!content || !over || !create_time || !resolves_time) {
-    return res.status(400).json({
-      code: 0,
-      error: '请填写完整的列表。'
-    });
+  if (!content || !create_time || !resolves_time) {
+    if (over === undefined) {
+      return res.status(400).json({
+        code: 0,
+        error: '请填写完整的列表。'
+      });
+    }
   }
 
   let overBool;
-  if (over === 'true') {
+  if (over === true) {
     overBool = 1;
-  } else if (over === 'false') {
+  } else if (over === false) {
     overBool = 0;
   } else {
     return res.status(400).json({

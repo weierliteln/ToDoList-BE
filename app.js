@@ -4,19 +4,24 @@ const join = require('joi')
 
 const app = express()
 
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 
-app.use(express.urlencoded({ extended: false }))
+// app.use(express.urlencoded({ extended: false }))
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Headers', 'Content-Type')
-  res.header('Access-Control-Allow-Methods', "DELETE,PUT,POST,GET,OPTIONS")
-  if (req.method.toLowerCase() === 'options') {
-    res.send(200)
-  }
-  next()
-})
+app.use(express.json())
+
+const cors = require('cors')
+app.use(cors())
+
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*')
+//   res.header('Access-Control-Allow-Headers', 'Content-Type')
+//   res.header('Access-Control-Allow-Methods', "DELETE,PUT,POST,GET,OPTIONS")
+//   if (req.method.toLowerCase() === 'options') {
+//     res.send(200)
+//   }
+//   next()
+// })
 
 // 解析token的中间件
 const config = require('./config')
