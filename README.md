@@ -1,22 +1,30 @@
 
 # TODOLIST
-### 使用说明
+## 使用说明
 
-1. 打开压缩包解压下载依赖
+1. 打开压缩包解压，在命令行中下载依赖
 
    ```
    pnpm install
    ```
 
-2. 检查电脑是否安装sqlite3，若没有先安装
+2. 打开命令行，检查电脑是否安装sqlite3，若没有先安装
 
-3. 下载安装SQLiteStudio或HeidiSQL并连接数据库
+   ```
+   sqlite3
+   ```
 
-4. 启动服务
+3. 下载安装SQLiteStudio或HeidiSQL，导入db目录下的database.db文件，并连接数据库
+
+4. 命令行启动服务
 
    ```
    nodemon app.js
    ```
+
+​	**如有问题请联系qq:1829305199**
+
+​	**GitHub地址：https://github.com/weierliteln/ToDoList-BE.git**
 
 Base URLs:http://127.0.0.1:3000
 
