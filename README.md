@@ -22,11 +22,11 @@
    nodemon app.js
    ```
 
-​	**如有问题请联系qq:1829305199**
+​	**如有问题/需要邀请进入apifox请联系qq:1829305199**
 
 ​	**GitHub地址：https://github.com/weierliteln/ToDoList-BE.git**
 
-Base URLs:http://127.0.0.1:3000
+**Base URLs:http://127.0.0.1:3000**
 
 ## POST 注册
 
@@ -53,7 +53,10 @@ password: ""
 > 200 Response
 
 ```json
-{}
+{
+  "code": 1,
+  "msg": "注册成功"
+}
 ```
 
 ### 返回结果
@@ -89,7 +92,11 @@ password: ""
 > 200 Response
 
 ```json
-{}
+{
+  "code": 1,
+  "msg": "登录成功",
+  "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3Mjg3NDIxNDMsImV4cCI6MTcyODc3ODE0M30.iYMRLk8gXBJrHpJ4GCY5ei4eysiHW4ZfbwkJKGx7iyA"
+}
 ```
 
 ### 返回结果
@@ -116,19 +123,28 @@ GET /todo/get/list
 
 > 返回示例
 
-> 200 Response
-
 ```json
 {
+  "code": 1,
   "data": [
     {
-      "id": 0,
-      "content": "string",
-      "over": true,
-      "create_time": "string",
-      "resolves_time": "string"
+      "id": 10,
+      "content": "333",
+      "over": false,
+      "create_time": "2024-04-04 18:20:25",
+      "resolves_time": "2024-04-04 18:20:28"
+    },
+    {
+      "id": 11,
+      "content": "ew",
+      "over": false,
+      "create_time": "2024-04-04 18:20:21",
+      "resolves_time": "2024-04-04 18:20:20"
     }
-  ]
+  ],
+  "page": 1,
+  "size": 10,
+  "total": 2
 }
 ```
 
@@ -139,17 +155,6 @@ GET /todo/get/list
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
 
 ### 返回数据结构
-
-状态码 **200**
-
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|» data|[object]|true|none||none|
-|»» id|integer|true|none||ID 编号|
-|»» content|string|true|none||none|
-|»» over|boolean|true|none||none|
-|»» create_time|string|true|none||none|
-|»» resolves_time|string|true|none||none|
 
 ## POST 添加一条todoliist
 
@@ -178,10 +183,11 @@ resolves_time: 2024-04-04 18:20:21
 
 > 返回示例
 
-> 200 Response
-
 ```json
-{}
+{
+  "code": 1,
+  "message": "成功插入记录"
+}
 ```
 
 ### 返回结果
@@ -205,10 +211,11 @@ DELETE /todo/delete/list/{id}
 
 > 返回示例
 
-> 200 Response
-
 ```json
-{}
+{
+  "code": 1,
+  "message": "成功删除记录"
+}
 ```
 
 ### 返回结果
@@ -247,10 +254,11 @@ resolves_time: ""
 
 > 返回示例
 
-> 200 Response
-
 ```json
-{}
+{
+  "code": 1,
+  "message": "成功更新记录"
+}
 ```
 
 ### 返回结果
@@ -258,6 +266,10 @@ resolves_time: ""
 |状态码|状态码含义|说明|数据模型|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+
+
+
 
 
 
